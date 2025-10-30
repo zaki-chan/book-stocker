@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // 共通の基本設定
+    // ワークスペース間のインポートを容易にする
+    // "moduleResolution": "node", // モノレポではnode解決が安定しやすいがTS7.0で非推奨
+    "moduleResolution": "bundler",
+    "target": "es2020",
+    // "module": "commonjs", // ワークスペースのパッケージビルドも考慮し、一旦commonjsに
+    "module":"esnext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true, // 厳格モードを有効化 (推奨)
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    // 共有パッケージのパス解決設定 (必要に応じて)
+    "paths": {
+      "@/*":["./*"],
+      "common-types": ["./packages/common-types/src/index.ts"]
+      // 例: "ui": ["./packages/ui/src/index.ts"]
+    }
+  }
+}

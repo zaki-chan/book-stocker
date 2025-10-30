@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json", // 👈 ルートのベースファイルを継承
+  "compilerOptions": {
+    // Honoとバックエンド特有の設定を上書き・追加
+    "lib": ["esnext"], // DOM APIは不要
+    "module": "commonjs", // Node.js実行環境に合わせてCommonJS形式で出力
+    "outDir": "dist", // コンパイルされたJSファイルの出力先
+    "noEmit": false, // HonoをJSとして実行するため、JSファイルを出力する
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

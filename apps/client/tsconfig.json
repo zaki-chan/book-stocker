@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json", // ルートのベースファイルを継承
+  "compilerOptions": {
+    // Next.jsとフロントエンド特有の設定を上書き・追加
+    "lib": ["dom", "dom.iterable", "esnext"], // DOM APIを追加
+    "jsx": "preserve", // JSXを保持
+    "module": "esnext", // FEバンドラ向けにES Module形式に
+    "moduleResolution": "bundler", // Next.jsで推奨
+    "noEmit": true, // Next.jsがコンパイルを処理するため、TSコンパイラは出力しない
+    // "ignoreDeprecations":"6.0", // baseUrlがTypeScript7.0で削除されるため
+    "plugins": [
+      {
+        "name": "next" // Next.jsの型チェックプラグイン
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
