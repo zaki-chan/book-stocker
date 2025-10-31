@@ -5,5 +5,10 @@
     "dependencies": {
         "@prisma/client": "^6.18.0",
         "prisma": "^6.18.0"
+    },
+    "scripts": {
+        "migrate-script": "npx dotenv -f ./.env -- pnpm exec prisma migrate dev",
+        "generate-script": "npx dotenv -f ./.env -- pnpm exec prisma generate --schema ./prisma/schema.prisma",
+        "postinstall": "dotenv -c -f ./.env -- prisma generate --schema ./prisma/schema.prisma"
     }
 }

@@ -1,0 +1,22 @@
+services:
+  db:
+    # 使用するPostgreSQLのイメージ
+    image: postgres:latest
+    # コンテナ名
+    container_name: book-db
+    # 外部公開ポート
+    ports:
+      - "5432:5432"
+    # 環境変数(認証情報)
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    # データが失われ無いようににする
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: always
+
+volumes:
+  postgres_data:
