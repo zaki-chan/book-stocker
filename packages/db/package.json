@@ -1,14 +1,22 @@
 {
-    "name": "db",
-    "version": "1.0.0",
-    "private": true,
-    "dependencies": {
-        "@prisma/client": "^6.18.0",
-        "prisma": "^6.18.0"
-    },
-    "scripts": {
-        "migrate-script": "npx dotenv -f ./.env -- pnpm exec prisma migrate dev",
-        "generate-script": "npx dotenv -f ./.env -- pnpm exec prisma generate --schema ./prisma/schema.prisma",
-        "postinstall": "dotenv -c -f ./.env -- prisma generate --schema ./prisma/schema.prisma"
-    }
+  "name": "db",
+  "version": "1.0.0",
+  "type": "module",
+  "private": "true",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.15.6",
+    "typescript": "^5.9.3"
+  }
 }

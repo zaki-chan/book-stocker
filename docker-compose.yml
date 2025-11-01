@@ -1,22 +1,38 @@
 services:
+  # サービス名 (コンテナ名とネットワークホスト名として使われます)
   db:
-    # 使用するPostgreSQLのイメージ
+    # 使用するPostgreSQLイメージ
     image: postgres:latest
+
     # コンテナ名
     container_name: book-db
-    # 外部公開ポート
-    ports:
-      - "5432:5432"
-    # 環境変数(認証情報)
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    # データが失われ無いようににする
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
+    # コンテナが予期せず終了した場合に自動的に再起動する
     restart: always
 
+    env_file:
+      - .env
+
+    # 接続情報の設定（環境変数）
+    environment:
+      # ユーザー名 (アプリケーションの接続に使用)
+      POSTGRES_USER: ${DB_USER}
+      # パスワード (アプリケーションの接続に使用)
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      # 初期データベース名
+      POSTGRES_DB: ${DB_NAME}
+
+    # ポートマッピングの設定
+    # ホストOSの5432ポートをコンテナの5432ポートに転送
+    ports:
+      - "5432:5432"
+
+    # データ永続化の設定
+    # ホストOSのボリュームにデータを保存し、コンテナを削除してもデータが残るようにする
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+# ボリューム定義セクション
 volumes:
   postgres_data:
+    # 永続化されたデータはこの名前のボリュームに保存されます
