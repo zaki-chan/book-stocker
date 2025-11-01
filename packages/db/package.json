@@ -6,7 +6,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create": "node-pg-migrate -j ts create --dir migrations",
+    "up": "node-pg-migrate up --dir migrations --env ./.env",
+    "down": "node-pg-migrate down --dir migrations --env ./env"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +19,9 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/node-pg-migrate": "^2.3.1",
     "@types/pg": "^8.15.6",
+    "node-pg-migrate": "^8.0.3",
     "typescript": "^5.9.3"
   }
 }
