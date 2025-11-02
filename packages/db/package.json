@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/node-pg-migrate": "^2.3.1",
     "@types/pg": "^8.15.6",
+    "dotenv": "^17.2.3",
     "node-pg-migrate": "^8.0.3",
     "typescript": "^5.9.3"
   }

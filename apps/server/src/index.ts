@@ -1,110 +1,62 @@
-import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-// import { html } from 'hono/html'
-// import { basicAuth } from 'hono/basic-auth'
-import { Client } from 'pg'
+import { serve } from '@hono/node-server'
+// packages/db/clientでPoolを用いてDBに接続している。
+import { pool, setupDbListenerAndTest } from '../../../packages/db/src/client.js'
+// import { STATUS_CODES } from 'http'
 
-
-const client = new Client({
-  user:'user',
-  password:'mysecretpassword',
-  host: 'localhost',
-  database: 'test_db',
-  port: 5432
-})
-
-// DB接続
-client.connect()
-  .then(() => console.log('connected'))
-  .catch((err) => console.log('Connection error', err.stack))
-
+// Honoインスタンスの作成
 const app = new Hono()
+// ポートの指定
+const port = 3001
 
-// DBからデータ取得
-app.get('/api/users/', async (c) => {
-  try{
-    const result = await client.query('SELECT * FROM users')
+// Honoサーバーヘルスチェック
+app.get('/api/health',(c)=>{
+    return c.json({ status:'ok', message: 'Hono server is running!'})
+})
 
-    return c.json({
-      ok:true,
-      users:result.rows
-    })
-  } catch(err){
-    if (err instanceof Error){
-      console.error('DB query failed:', err.stack)
-      return c.json({
-        ok:false,
-        message:'Failed to fetch users from database.'
-      },500)
+// バックエンドからのDB接続テスト
+app.get('/api/test-db', async (c) => {
+    try {
+        // DBに現在の時間を問い合わせて接続チェック
+        const result = await pool.query('SELECT NOW()')
+        // レスポンスが得られたら接続成功でreturnする
+        return c.json({
+            status: 'ok',
+            database:'connected',
+            serverTime: result.rows[0].now
+        })
+    } catch (e) {
+        // 接続できなかった場合はErrorとして出力
+        console.error('Database connection failed during request:', e)
+        // レスポンスが得られなければ、HTTPコード500:Internal server errorでreturnする
+        return c.json({
+            status:'error',
+            message:'DB Connection Failed.'
+        },500)
     }
-    console.error('An unknown error occurred:', err)
-    return c.json({
-      ok:false,
-      message:'An unknown error occurred.'
-    },500)
-  }
 })
+// DB接続はpackage/db/src/clientで行っている
+// バックエンドサーバー起動時にclientがDBに接続するように呼び出す
+async function startServer(){
+    try {
+        // clientの接続テスト
+        await setupDbListenerAndTest();
+        // Node.js形式のHTTPリクエストをWeb標準のRequestオブジェクトに変換
+        serve({
+            fetch: app.fetch,
+            port
+        }, (info)=>{
+            console.log(`Hono server listening on port http://localhost:${info.port}`)
+        })
+    } catch (err) {
+        // errがmessageプロパティを持つ場合にエラー内容を変える
+        if(err instanceof Error){
+            console.error('Server failed to start due to DB error:', err.message)
+        } else {
+            console.error('An unknown error occurred:', err)
+        }
+        process.exit(1)
+    }
+}
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
-
-// app.get('/api/hello',(c) =>{
-//   return c.json({
-//     ok:true,
-//     message:'Hello Hono!',
-//   })
-// })
-
-// app.get('/posts/:id',(c)=>{
-//   const page = c.req.query('page')
-//   const id = c.req.param('id')
-//   c.header('X-Message','Hi!')
-//   return c.text(`You want to see ${page} of ${id}`)
-// })
-
-// app.post('/posts',(c) => c.text('Created!',201))
-// app.delete('/posts/:id',(c)=>
-//   c.text(`${c.req.param('id')} is deleted!`)
-// )
-
-// const View = () =>{
-//   return(
-//     <html>
-//       <body>
-//         <h1>Hello Hono!</h1>
-//       </body>
-//     </html>
-//   )
-// }
-
-// app.get('/page',(c)=>{
-//   return c.html(<View />)
-// })
-
-// app.get('/',()=>{
-//   return new Response('Good morning!')
-// })
-
-// app.use(
-//   '/admin/*',
-//   basicAuth({
-//     username:'admin',
-//     password:'secret'
-//   })
-// )
-
-// app.get('/admin',(c)=>{
-//   return c.text('You are authorized!')
-// })
-
-// サーバー起動設定
-const port = 3000
-console.log(`Hono Server listening on localhost:${port}`)
-// serve関数でNode.jsランタイムでHonoを起動
-serve({
-  fetch:app.fetch,
-  port
-})
-
-// export default app
+startServer()
