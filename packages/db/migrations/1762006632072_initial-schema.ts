@@ -19,12 +19,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
             type:'varchar(255)',
             notNull:true,
         },
-        // タイムスタンプ
-        createdAt:{
-            type:'timestamp',
-            notNull:true,
-            default:pgm.func('CURRENT_TIMESTAMP'),
-        },
     });
     // Bookテーブル
     pgm.createTable('Book', {
@@ -55,18 +49,6 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
         // 表紙URL
         coverUrl: {
             type: 'text', // URLは長くなる可能性があるため TEXT型
-        },
-    });
-    // Tagテーブル(記録につけるタグ)
-    pgm.createTable('Tag', {
-        id: {
-            type: 'serial',
-            primaryKey: true,
-        },
-        name: {
-            type: 'varchar(50)',
-            notNull: true,
-            unique: true,
         },
     });
     // Recordテーブル(User,Bookへの外部キー)
@@ -103,6 +85,18 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
         isPublic: {
             type: 'boolean',
             default: false,
+        },
+    });
+    // Tagテーブル(記録につけるタグ)
+    pgm.createTable('Tag', {
+        id: {
+            type: 'serial',
+            primaryKey: true,
+        },
+        name: {
+            type: 'varchar(50)',
+            notNull: true,
+            unique: true,
         },
     });
     // WishListテーブル(中間テーブル)
