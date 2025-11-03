@@ -1,8 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "declaration": true, // 外部に公開する型定義ファイル (.d.ts) を出力
     "emitDeclarationOnly": true,
     "outDir": "dist"
