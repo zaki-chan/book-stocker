@@ -3,6 +3,7 @@ import { serve } from '@hono/node-server'
 // packages/db/clientでPoolを用いてDBに接続している。
 import { pool, setupDbListenerAndTest } from '../../../packages/db/src/client.js'
 // import { STATUS_CODES } from 'http'
+import booksRouter from '../src/api/books.js'
 
 // Honoインスタンスの作成
 const app = new Hono()
@@ -35,6 +36,9 @@ app.get('/api/test-db', async (c) => {
         },500)
     }
 })
+// ルーターの設定
+app.route('/api/books', booksRouter)
+
 // DB接続はpackage/db/src/clientで行っている
 // バックエンドサーバー起動時にclientがDBに接続するように呼び出す
 async function startServer(){
