@@ -12,14 +12,14 @@ interface GoogleBooksApiResponse{
     totalItems:number
     items?:GoogleBookItem[]
 }
-// 書籍情報のインターフェース
+// APIから得られる書籍情報のインターフェース
 interface GoogleBookItem {
     id:string
     volumeInfo:{
         title:string
         authors?: string[]
         publishedDate?:string
-        publisher?:string;
+        publisher?:string
         industryIdentifiers?: Array<{type:string; identifier:string;}>
         imageLinks?:{
             smallThumbnail?:string
@@ -27,11 +27,20 @@ interface GoogleBookItem {
         }
     }
 }
-
+// APIから得られた検索結果
+interface BookInfoResult {
+    id:string
+    title:string
+    author:string
+    publisher:string
+    coverUrl: string | null
+    isRegistered: boolean
+}
 // 環境変数を読み込むためのモジュール類
 import * as dotenv from 'dotenv'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import test from 'node:test'
 // 環境変数用のパス設定
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -56,10 +65,11 @@ books.get('/search', async (c) => {
     const keyword = c.req.query('keyword')
     // 検索キーワードのnullチェック
     if(!keyword){
-        return c.json({ error: 'need keyword'}, 400)
+        return c.json({ error: 'need title'}, 400)
     }
     // APIへのリクエスト用URL生成
-    const url = `${GOOGLE_API_ENDPOINT}?q="${encodeURIComponent(keyword)}"&startIndex=0&maxResults=20&langRestrict=ja&key=${API_KEY}`
+    // タイトル検索に変更
+    const url = `${GOOGLE_API_ENDPOINT}?q="${encodeURIComponent(keyword)}"&orderBy=relevance&startIndex=0&maxResults=20&langRestrict=ja&key=${API_KEY}`
 
     try {
         // Google Books APIからのレスポンス取得
@@ -70,20 +80,58 @@ books.get('/search', async (c) => {
         }
         // レスポンスのjsonに型を付与
         const data = await apiResponse.json() as GoogleBooksApiResponse
+
         // 取得したデータから情報を取り出す
-        const bookResults = (data.items || []).map(item => ({
-            isbn: item.volumeInfo.industryIdentifiers?.find( id => id.type === 'ISBN_13'||'ISBN_10')?.identifier || '',
+        const bookResults:BookInfoResult[] = (data.items || []).map(item => ({
+            id: item.id,
             title: item.volumeInfo.title,
             author: item.volumeInfo.authors?.join(', ') || '不明',
             publisher: item.volumeInfo.publisher || '',
             coverUrl: item.volumeInfo.imageLinks?.thumbnail || null,
+            isRegistered: false
         }))
+
+        const registeredBooksKeys = await findRegisteredBooks(bookResults)
+
+        const flaggedBookResults = bookResults.map(book => {
+            const matchKey = `${book.title.trim()}||${book.author.trim()}`
+
+            return {
+                ...book,
+                isRegistered: registeredBooksKeys.has(matchKey)
+            }
+        })
+
         // json形式で結果を返す
-        return c.json({ results: bookResults || []})
+        return c.json({ results: flaggedBookResults || []})
     } catch(err) {
         console.error('Fetch error', err)
         return c.json({ error: 'サーバー側の通信エラー'}, 500)
     }
 })
+// APIから得られたデータに対して、DBに登録されているデータのIDのSetを返す
+async function findRegisteredBooks(searchList: BookInfoResult[]): Promise<Set<string>>{
+    if (searchList.length === 0) return new Set()
+
+    const uniqueKeys = new Set(
+        searchList.map(b => `${b.title.trim()}||${b.author.trim()}`)
+    )
+
+    const titles = [...new Set(searchList.map(b=>b.title.trim()))]
+    const authors = [...new Set(searchList.map(b=>b.author.trim()))]
+
+    const queryText = `SELECT title, author FROM "Book"
+                    WHERE title = ANY($1) AND author = ANY($2)`
+
+
+    const dbResult = await pool.query(queryText, [titles, authors])
+    // 登録されている書籍のIDを取得
+    const registeredKeys = new Set<string>()
+    for(const row of dbResult.rows){
+        registeredKeys.add(`${(row.title as string).trim()}||${(row.author as string).trim()}`)
+    }
+
+    return registeredKeys
+}
 
 export default books
