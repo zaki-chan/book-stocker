@@ -56,6 +56,15 @@ if(!API_KEY){
 
 const GOOGLE_API_ENDPOINT = 'https://www.googleapis.com/books/v1/volumes'
 
+// デモ用ユーザー情報
+const testuser = {
+    id:1,
+    email:"user1@example.com",
+    username:"user1",
+    password:"password1"
+}
+
+
 const books = new Hono();
 
 books.get('/search', async (c) => {
@@ -89,7 +98,7 @@ books.get('/search', async (c) => {
             isRegistered: false
         }))
         // 登録済みの書籍名/著者を取得
-        const registeredBooksKeys = await findRegisteredBooks(bookResults)
+        const registeredBooksKeys = await findRegisteredBooks(bookResults,testuser.id)
         // DBに登録されている書籍にTrue,されていない書籍にFalseをつける
         const flaggedBookResults = bookResults.map(book => {
             const matchKey = `${book.title.trim()}||${book.author.trim()}`
@@ -108,7 +117,7 @@ books.get('/search', async (c) => {
     }
 })
 // APIから得られたデータに対して、DBに登録されているデータのタイトルと著者のSetを返す
-async function findRegisteredBooks(searchList: BookInfoResult[]): Promise<Set<string>>{
+async function findRegisteredBooks(searchList: BookInfoResult[], userId:number): Promise<Set<string>>{
     // Google Books APIの検索結果がなかった場合は空のSetを返す
     if (searchList.length === 0) return new Set()
 
@@ -118,9 +127,13 @@ async function findRegisteredBooks(searchList: BookInfoResult[]): Promise<Set<st
 
     // タイトル/著者の組み合わせを満たすデータを取得
     // todo:ユーザー認証をつけた後、データの参照先を変更
-    const queryText = `SELECT title, author FROM "Book"
-                    WHERE title = ANY($1) AND author = ANY($2)`
-    const dbResult = await pool.query(queryText, [titles, authors])
+    const queryText = `SELECT T1.title, T1.author FROM "Book" AS T1
+                    INNER JOIN "Record" AS T2 ON T1.id = T2."bookId"
+                    WHERE
+                        T2."userId" = $3 AND
+                        T1.title = ANY($1) AND
+                        T1.author = ANY($2)`
+    const dbResult = await pool.query(queryText, [titles, authors, userId])
     // 登録されている書籍のIDを取得
     const registeredKeys = new Set<string>()
     for(const row of dbResult.rows){
