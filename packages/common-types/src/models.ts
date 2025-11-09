@@ -4,12 +4,13 @@ export type User = {
     id:number;
     email:string;
     username:string;
+    password:string;
 }
 // 書籍テーブルのレコード型
 // ISBNコード、タイトル、著者など、書籍の基本情報を格納
 export type Book = {
     id:number;
-    isbn:string;
+    // isbn:string;
     title:string;
     author:string;
     publisher:string;
