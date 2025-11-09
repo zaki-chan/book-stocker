@@ -6,23 +6,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "create": "node-pg-migrate -j ts create --dir migrations",
-    "up": "node-pg-migrate up --dir migrations --env ./.env",
-    "down": "node-pg-migrate down --dir migrations --env ./env"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.19.0",
-  "dependencies": {
-    "pg": "^8.16.3"
-  },
   "devDependencies": {
-    "@types/node-pg-migrate": "^2.3.1",
-    "@types/pg": "^8.15.6",
+    "@types/node": "^24.9.1",
     "dotenv": "^17.2.3",
-    "node-pg-migrate": "^8.0.3",
+    "prisma": "^6.19.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "@prisma/extension-accelerate": "^2.0.2"
   }
 }

@@ -1,14 +1,17 @@
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
-// packages/db/clientでPoolを用いてDBに接続している。
-import { pool, setupDbListenerAndTest } from '../../../packages/db/src/client.js'
-// import { STATUS_CODES } from 'http'
+// prismaでDB接続 & BEサーバー起動時にDB接続テストを実行
+import { prisma, onStartDbTest } from '../../../packages/db/index.js'
 import booksRouter from '../src/api/books.js'
 
 // Honoインスタンスの作成
 const app = new Hono()
 // ポートの指定
 const port = 3001
+// APIルートでのレスポンスを作成
+app.get('/', (c)=>{
+    return c.text('Hello, Hono !')
+})
 
 // Honoサーバーヘルスチェック
 app.get('/api/health',(c)=>{
@@ -19,12 +22,12 @@ app.get('/api/health',(c)=>{
 app.get('/api/test-db', async (c) => {
     try {
         // DBに現在の時間を問い合わせて接続チェック
-        const result = await pool.query('SELECT NOW()')
+        const res = await prisma.$queryRaw`SELECT NOW()`
         // レスポンスが得られたら接続成功でreturnする
         return c.json({
             status: 'ok',
             database:'connected',
-            serverTime: result.rows[0].now
+            serverTime: res,
         })
     } catch (e) {
         // 接続できなかった場合はErrorとして出力
@@ -39,12 +42,11 @@ app.get('/api/test-db', async (c) => {
 // ルーターの設定
 app.route('/api/books', booksRouter)
 
-// DB接続はpackage/db/src/clientで行っている
+// DB接続はpackage/db/src/indexで行っている
 // バックエンドサーバー起動時にclientがDBに接続するように呼び出す
 async function startServer(){
     try {
-        // clientの接続テスト
-        await setupDbListenerAndTest();
+        await onStartDbTest()
         // Node.js形式のHTTPリクエストをWeb標準のRequestオブジェクトに変換
         serve({
             fetch: app.fetch,

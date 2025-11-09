@@ -3,7 +3,7 @@
 import { Hono } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
-import { pool } from '../../../../packages/db/src/client.js'
+import { prisma } from '@/packages/db/index.js'
 
 // GoogleBooksAPIのレスポンスのインターフェース
 interface GoogleBooksApiResponse{
@@ -121,22 +121,36 @@ async function findRegisteredBooks(searchList: BookInfoResult[], userId:number):
     if (searchList.length === 0) return new Set()
 
     // タイトル/著者を取得
-    const titles = [...new Set(searchList.map(b=>b.title.trim()))]
-    const authors = [...new Set(searchList.map(b=>b.author.trim()))]
+    const orConditions = searchList.map(book => ({
+        AND: [
+            { title: book.title.trim()},
+            { author: book.author.trim()},
+        ]
+    }))
+
+    const registeredBooks = await prisma.book.findMany({
+        where:{
+            OR:orConditions,
+
+            records: {
+                some: {
+                    userId:userId,
+                },
+            },
+        },
+        select:{
+            title:true,
+            author:true,
+        }
+    })
 
     // タイトル/著者の組み合わせを満たすデータを取得
     // todo:ユーザー認証をつけた後、データの参照先を変更
-    const queryText = `SELECT T1.title, T1.author FROM "Book" AS T1
-                    INNER JOIN "Record" AS T2 ON T1.id = T2."bookId"
-                    WHERE
-                        T2."userId" = $3 AND
-                        T1.title = ANY($1) AND
-                        T1.author = ANY($2)`
-    const dbResult = await pool.query(queryText, [titles, authors, userId])
-    // 登録されている書籍のIDを取得
+   // 登録されている書籍のIDを取得
     const registeredKeys = new Set<string>()
-    for(const row of dbResult.rows){
-        registeredKeys.add(`${(row.title as string).trim()}||${(row.author as string).trim()}`)
+    for(const book of registeredBooks){
+        const authorName = book.author || '不明'
+        registeredKeys.add(`${book.title.trim()}||${authorName.trim()}`)
     }
 
     return registeredKeys

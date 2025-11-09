@@ -1,0 +1,28 @@
+{
+  "name": "olddb",
+  "version": "1.0.0",
+  "type": "module",
+  "private": "true",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create": "node-pg-migrate -j ts create --dir migrations",
+    "up": "node-pg-migrate up --dir migrations --env ./.env",
+    "down": "node-pg-migrate down --dir migrations --env ./env"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node-pg-migrate": "^2.3.1",
+    "@types/pg": "^8.15.6",
+    "dotenv": "^17.2.3",
+    "node-pg-migrate": "^8.0.3",
+    "typescript": "^5.9.3"
+  }
+}
