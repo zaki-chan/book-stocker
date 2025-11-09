@@ -4,7 +4,6 @@ import { Hono, Context } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 import { pool } from '../../../../packages/db/src/client.js'
-import type { Book } from '../../../../packages/common-types/src/models.js'
 
 // GoogleBooksAPIのレスポンスのインターフェース
 interface GoogleBooksApiResponse{
@@ -40,7 +39,6 @@ interface BookInfoResult {
 import * as dotenv from 'dotenv'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import test from 'node:test'
 // 環境変数用のパス設定
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -90,9 +88,9 @@ books.get('/search', async (c) => {
             coverUrl: item.volumeInfo.imageLinks?.thumbnail || null,
             isRegistered: false
         }))
-
+        // 登録済みの書籍名/著者を取得
         const registeredBooksKeys = await findRegisteredBooks(bookResults)
-
+        // DBに登録されている書籍にTrue,されていない書籍にFalseをつける
         const flaggedBookResults = bookResults.map(book => {
             const matchKey = `${book.title.trim()}||${book.author.trim()}`
 
@@ -114,14 +112,14 @@ async function findRegisteredBooks(searchList: BookInfoResult[]): Promise<Set<st
     // Google Books APIの検索結果がなかった場合は空のSetを返す
     if (searchList.length === 0) return new Set()
 
-    // タイトルをSetとして
+    // タイトル/著者を取得
     const titles = [...new Set(searchList.map(b=>b.title.trim()))]
     const authors = [...new Set(searchList.map(b=>b.author.trim()))]
 
+    // タイトル/著者の組み合わせを満たすデータを取得
+    // todo:ユーザー認証をつけた後、データの参照先を変更
     const queryText = `SELECT title, author FROM "Book"
                     WHERE title = ANY($1) AND author = ANY($2)`
-
-
     const dbResult = await pool.query(queryText, [titles, authors])
     // 登録されている書籍のIDを取得
     const registeredKeys = new Set<string>()
