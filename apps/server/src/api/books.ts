@@ -1,6 +1,6 @@
 // 書籍検索、情報取得、DB照合のルート
 
-import { Hono, Context } from 'hono'
+import { Hono } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 import { pool } from '../../../../packages/db/src/client.js'
@@ -53,7 +53,7 @@ if(!API_KEY){
     console.error("API_KEY environment variable is not set.")
     throw new Error("API_KEY is required for API connection.")
 }
-
+// Google Books APIのエンドポイントURL
 const GOOGLE_API_ENDPOINT = 'https://www.googleapis.com/books/v1/volumes'
 
 // デモ用ユーザー情報
@@ -63,7 +63,6 @@ const testuser = {
     username:"user1",
     password:"password1"
 }
-
 
 const books = new Hono();
 
