@@ -109,14 +109,12 @@ books.get('/search', async (c) => {
         return c.json({ error: 'サーバー側の通信エラー'}, 500)
     }
 })
-// APIから得られたデータに対して、DBに登録されているデータのIDのSetを返す
+// APIから得られたデータに対して、DBに登録されているデータのタイトルと著者のSetを返す
 async function findRegisteredBooks(searchList: BookInfoResult[]): Promise<Set<string>>{
+    // Google Books APIの検索結果がなかった場合は空のSetを返す
     if (searchList.length === 0) return new Set()
 
-    const uniqueKeys = new Set(
-        searchList.map(b => `${b.title.trim()}||${b.author.trim()}`)
-    )
-
+    // タイトルをSetとして
     const titles = [...new Set(searchList.map(b=>b.title.trim()))]
     const authors = [...new Set(searchList.map(b=>b.author.trim()))]
 
