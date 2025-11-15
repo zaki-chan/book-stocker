@@ -15,3 +15,8 @@
 - データベーススキーマを更新した場合
   - (マイグレーション)ルートディレクトリでpnpm run db:create <Migration's name>
   - (生成)ルートディレクトリでpnpm run db:generate
+
+docker-compose up -d --build
+npx prisma migrate --name <name>
+npx prisma generate
+pnpm run dev:server
