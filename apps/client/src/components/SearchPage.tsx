@@ -3,12 +3,12 @@ import { useState } from "react"
 import { BookInfoResult } from '@/packages/common-types/src/BooksAPItypes'
 import SearchForm from './SearchForm'
 import BookResultList from './SearchResultsList'
+// import styles from './SearchPage.module.css'
 
 
 interface SearchPageProps{
     initialResults: BookInfoResult[];
-    currentUserId: number;
-}
+    currentUserId: number;}
 
 export default function SearchPage({ initialResults, currentUserId}:SearchPageProps){
     const [ results, setResults ] = useState<BookInfoResult[]>(initialResults)
@@ -45,19 +45,21 @@ export default function SearchPage({ initialResults, currentUserId}:SearchPagePr
     }
 
     return (
-        <div className="search-page-container">
+        <div className="max-w-screen-sm">
             <h1>書籍検索</h1>
-            <SearchForm
-                onSubmit={handleSearch}
-                isLoading={isLoading}
-            />
-
-            {isLoading && <p>検索中...</p>}
-            {error && <p>エラー：{error}</p>}
+            <div className="max-w-11/12 ml-auto mr-auto">
+                <SearchForm
+                    onSubmit={handleSearch}
+                    isLoading={isLoading}
+                />
+                {error && <p>エラー：{error}</p>}
+                {isLoading && <p>検索中...</p>}
+            </div>
 
             <BookResultList
                 books={results}
-                currentUserId={0}
+                currentUserId={currentUserId}
+                isLoading={isLoading}
             />
         </div>
     )

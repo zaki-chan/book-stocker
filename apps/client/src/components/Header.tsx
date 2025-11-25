@@ -5,15 +5,15 @@ import iconImage from "../../public/account_circle.png"
 
 export default function Header() {
     return(
-        <header className={styles.header}>
-            <nav className={styles.navigator}>
-                <ul className={styles.navflexbox}>
-                    <li><Link href="/" className={styles.navlink}>Home</Link></li>
-                    <li><Link href="/search" className={styles.navlink}>Search</Link></li>
-                    <li><Link href="/library" className={styles.navlink}>MyLibrary</Link></li>
+        <header className=''>
+            <nav className=''>
+                <ul className=''>
+                    <li><Link href="/" className=''>Home</Link></li>
+                    <li><Link href="/search" className=''>Search</Link></li>
+                    <li><Link href="/library" className=''>MyLibrary</Link></li>
                 </ul>
             </nav>
-            <div className={styles.icon}>
+            <div className=''>
                 <Image
                     src={iconImage}
                     width={30}

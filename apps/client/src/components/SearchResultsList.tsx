@@ -2,18 +2,23 @@ import Result from 'react'
 
 import { BookInfoResult } from '@/packages/common-types/src/BooksAPItypes'
 import BookCard from './BookCard'
-import styles from './SearchResultsList.module.css'
+// import styles from './SearchResultsList.module.css'
 
 interface SearchResultListProps {
     books: BookInfoResult[]
     currentUserId: number
+    isLoading: boolean
 }
 
-export default function SearchResultList({ books, currentUserId }:SearchResultListProps){
+export default function SearchResultList({ books, currentUserId, isLoading }:SearchResultListProps){
     if(!books || books.length === 0){
         return(
             <div>
-                検索結果がありません。キーワードを変えてみてください
+                {isLoading ? (
+                    ''
+                ) : (
+                    ''
+                )}
             </div>
         )
     }
