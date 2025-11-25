@@ -45,7 +45,7 @@ export default function SearchPage({ initialResults, currentUserId}:SearchPagePr
     }
 
     return (
-        <div className="max-w-screen-sm">
+        <div className="max-w-(--breakpoint-sm)">
             <h1>書籍検索</h1>
             <div className="max-w-11/12 ml-auto mr-auto">
                 <SearchForm
