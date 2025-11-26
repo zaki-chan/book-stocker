@@ -45,21 +45,20 @@ export default function SearchPage({ initialResults, currentUserId}:SearchPagePr
     }
 
     return (
-        <div className="max-w-(--breakpoint-sm)">
-            <h1>書籍検索</h1>
-            <div className="max-w-11/12 ml-auto mr-auto">
+        <div className="pl-5 pr-5">
+            {/* <h1>書籍検索</h1> */}
+            <div className="max-w-200 ml-auto mr-auto mt-3">
                 <SearchForm
                     onSubmit={handleSearch}
                     isLoading={isLoading}
                 />
-                {error && <p>エラー：{error}</p>}
-                {isLoading && <p>検索中...</p>}
             </div>
 
             <BookResultList
                 books={results}
                 currentUserId={currentUserId}
                 isLoading={isLoading}
+                error={error}
             />
         </div>
     )

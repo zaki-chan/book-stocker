@@ -3,6 +3,7 @@ import React from 'react'
 import { BookInfoResult } from '../../../../packages/common-types/src/BooksAPItypes'
 // import styles from './BookCard.module.css'
 import { Button } from '../../components/ui/button'
+import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription} from '../../components/ui/card'
 // 書籍情報を受け取るためのインターフェース
 interface BookCardProps {
     bookInfo:BookInfoResult
@@ -14,10 +15,16 @@ export default function BookCard({bookInfo}:BookCardProps){
     const handleClick = () => {
         console.log('register')
     }
+
+    // 登録済みフラグ
+    const registrationStatus = bookInfo.isRegistered
+                                ?"bg-green-50 border-green-300"
+                                :"border-gray-200";
+
     // 書籍画像と情報を表示する
     return(
         <div className=''>
-            <Image
+            {/* <Image
                 src={bookInfo.coverUrl as string}
                 width={200}
                 height={280}
@@ -36,7 +43,45 @@ export default function BookCard({bookInfo}:BookCardProps){
                     onClick={handleClick}>
                         登録
                 </Button>
-            </div>
+            </div> */}
+            <Card className={`flex flex-col h-full ${registrationStatus}`}>
+                <CardHeader className='flex flex-row items-start space-x-4 pb-2'>
+                    {bookInfo.coverUrl && (
+                        <div className='w-16 h-24 shrink-0 bg-gray-100 border rounded'>
+                            <Image
+                                src={bookInfo.coverUrl as string}
+                                width={200}
+                                height={280}
+                                alt={bookInfo.title}
+                                className='w-full h-full object-cover'
+                            />
+                        </div>
+                    )}
+
+                    <div className='grow min-w-0'>
+                        <CardTitle className='text-base font-bold line-clamp-2'>
+                            {bookInfo.title}
+                        </CardTitle>
+                        <CardDescription className='text-sm line-clamp-2 mt-1'>
+                            {bookInfo.author} / {bookInfo.publisher}
+                        </CardDescription>
+                    </div>
+                </CardHeader>
+
+                <CardContent className='pt-2 text-sm'>
+                    {bookInfo.isRegistered ? (
+                        <span className='text-green-600 font-semibold flex items-center gap-1'>
+                            記録済み
+                        </span>
+                    ):(
+                        <span className='text-gray-500'>未登録</span>
+                    )}
+                </CardContent>
+
+                <CardFooter className='pt-0 mt-auto'>
+                    {/* アクションボタン */}
+                </CardFooter>
+            </Card>
         </div>
     )
 }

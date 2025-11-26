@@ -8,28 +8,34 @@ interface SearchResultListProps {
     books: BookInfoResult[]
     currentUserId: number
     isLoading: boolean
+    error: string | null
 }
 
-export default function SearchResultList({ books, currentUserId, isLoading }:SearchResultListProps){
+export default function SearchResultList({ books, currentUserId, isLoading, error }:SearchResultListProps){
+    if(error){
+        return(
+            <p>{error}</p>
+        )
+    }
+
     if(!books || books.length === 0){
         return(
-            <div>
-                {isLoading ? (
-                    ''
-                ) : (
-                    ''
-                )}
-            </div>
+            <p>検索結果がありません。</p>
         )
     }
 
     return(
         <div>
             <h2>
-                検索結果 ({books.length} 件)
+                { isLoading ? (
+                        '検索中'
+                    ): (
+                        `検索結果 (${books.length} 件)`
+                    )
+                }
             </h2>
 
-            <div>
+            <div className='grid grid-cols-1 gap-6 mt-6'>
                 {books.map((book) => (
                     <BookCard key = {book.id} bookInfo = {book}/>
                 ))}

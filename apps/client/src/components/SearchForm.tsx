@@ -56,30 +56,30 @@ function SearchFormFunc({ onSubmit, isLoading }:SearchFormProps){
 
     return(
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSearch)} className='mx-5 flex gap-3 items-center'>
+            <form onSubmit={form.handleSubmit(onSearch)} className='mx-5 flex gap-3 justify-between'>
                 <FormField
                     control = {form.control}
                     name = 'keyword'
                     render = {({ field }) => (
-                        <FormItem className='basis-3/4'>
+                        <FormItem className='flex-auto'>
                             {/* <FormLabel>検索フォーム</FormLabel> */}
                             <FormControl>
-                                <Input placeholder='キーワードを入力' {...field}/>
+                                <Input placeholder='書籍を検索' {...field}/>
                             </FormControl>
                         </FormItem>
                     )}
                 />
 
-                <Button type='submit' disabled={isLoading} className='basis-1/8'>検索</Button>
+                <Button type='submit' disabled={isLoading} className='flex-none' variant='default'>検索</Button>
             </form>
         </Form>
     )
 }
 export default function SearchForm({ onSubmit, isLoading}: SearchFormProps){
     return(
-        <Card>
+        <Card className='max-w-200'>
             <CardHeader>
-                <CardTitle>検索フォーム</CardTitle>
+                <CardTitle>書籍検索フォーム</CardTitle>
             </CardHeader>
             <CardContent>
                 <SearchFormFunc onSubmit={onSubmit} isLoading={isLoading}/>
@@ -87,7 +87,6 @@ export default function SearchForm({ onSubmit, isLoading}: SearchFormProps){
         </Card>
     )
 }
-
 // ↑生成後のプログラム
 // ↓生成前のプログラム
 // 'use client'
