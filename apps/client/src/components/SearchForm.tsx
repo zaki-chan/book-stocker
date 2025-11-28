@@ -23,9 +23,6 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormField, FormItem, FormLabel, FormControl } from '../../components/ui/form'
 
-// ----------------------------------------------------------------
-// 1. Props と Schema の定義
-// ----------------------------------------------------------------
 interface SearchFormProps {
     onSubmit: (keyword: string) => void
     isLoading: boolean
@@ -40,9 +37,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-// ----------------------------------------------------------------
-// 2. コンポーネント本体
-// ----------------------------------------------------------------
 function SearchFormFunc({ onSubmit, isLoading }:SearchFormProps){
     const form = useForm<FormValues>({
         defaultValues: {
@@ -87,128 +81,3 @@ export default function SearchForm({ onSubmit, isLoading}: SearchFormProps){
         </Card>
     )
 }
-// ↑生成後のプログラム
-// ↓生成前のプログラム
-// 'use client'
-
-// import React, { useState } from 'react'
-// import { useForm } from 'react-hook-form'
-// import { z } from 'zod'
-// import { Button } from '../../components/ui/button'
-// import { Spinner } from '../../components/ui/spinner'
-// import { Input } from '../../components/ui/input'
-// import {
-//   Form,
-//   FormControl,
-//   FormDescription,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "../../components/ui/form"
-// import { zodResolver } from '@hookform/resolvers/zod'
-
-// interface SearchFormProps {
-//     onSubmit: (keyword: string) => void
-//     isLoading: boolean
-// }
-
-// const formSchema = z.object({
-//     keyword: z.string().min(1, {
-//         message:"Search Keyword mus be at least 1"
-//         }
-//     )
-// })
-
-// export default function SearchForm({ onSubmit, isLoading}: SearchFormProps){
-//     // フォームの入力状態の管理
-//     const [ keyword, setKeyword ] = useState('')
-
-//     const form = useForm<z.infer<typeof formSchema>>({
-//         resolver: zodResolver(formSchema),
-//         defaultValues:{
-//             keyword: '',
-//         },
-//     })
-
-//     function onSearch(values: z.infer<typeof formSchema>){
-//         // 空欄での検索を防ぐ
-//         const trimmedKeyword = keyword.trim()
-//         if(trimmedKeyword){
-//             onSubmit(trimmedKeyword)
-//         }
-//     }
-
-//     const handleSubmit = (e: React.FormEvent) => {
-//         e.preventDefault()
-
-//         // 空欄での検索を防ぐ
-//         const trimmedKeyword = keyword.trim()
-//         if(trimmedKeyword){
-//             onSubmit(trimmedKeyword)
-//         }
-//     }
-
-//     return(
-//         <Form {...form}>
-//             <form onSubmit={form.handleSubmit(onSearch)}>
-//                 <FormField
-//                     name='searchbooks'
-//                     render={() => (
-//                         <FormItem>
-//                             {/* <FormLabel>SearchKeyword</FormLabel> */}
-//                             <FormControl>
-//                                 <Input
-//                                     placeholder='書籍名、著者名、キーワードを入力'/>
-//                                     disabled={isLoading}
-//                             </FormControl>
-//                             {/* <FormDescription>
-//                                 This is book search form
-//                             </FormDescription> */}
-//                             <FormMessage />
-//                         </FormItem>
-//                     )}
-//                 />
-//                 <Button
-//                     type='submit'
-//                 >
-//                     {
-//                         isLoading?
-//                             <Spinner>
-//                                 '検索中'
-//                             </Spinner>
-//                             :
-//                             '検索'
-//                     }
-//                 </Button>
-//             </form>
-//         </Form>
-//         // <form
-//         //     onSubmit={handleSubmit}
-//         // >
-//         //     <Input
-//         //         type="text"
-//         //         value={keyword}
-//         //         onChange={(e) => setKeyword(e.target.value)}
-//         //         placeholder='書籍名、著者名、キーワードを入力'
-//         //         disabled={isLoading}
-//         //         aria-label='検索キーワード'
-//         //     />
-
-//         //     <Button
-//         //         size='lg'
-//         //         variant="outline"
-//         //         type='submit'
-//         //         disabled = {isLoading || !keyword.trim()}
-//         //     >
-//         //         {isLoading ?
-//         //             <Spinner>
-//         //                 '検索中'
-//         //             </Spinner>
-//         //             :
-//         //             '検索'
-//         //         }
-//         //     </Button>
-//         // </form>
-//     )
-// }
