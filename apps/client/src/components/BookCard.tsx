@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import { BookInfoResult } from '../../../../packages/common-types/src/BooksAPItypes'
+import RecordActionButton from './RecordButton'
 // import styles from './BookCard.module.css'
 import { Button } from '../../components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription} from '../../components/ui/card'
@@ -80,6 +81,7 @@ export default function BookCard({bookInfo}:BookCardProps){
 
                 <CardFooter className='pt-0 mt-auto'>
                     {/* アクションボタン */}
+                    <RecordActionButton book={bookInfo}/>
                 </CardFooter>
             </Card>
         </div>
