@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { BookInfoResult } from '@/packages/common-types/src/BooksAPItypes'
+import { BookInfoResult } from '../../../../packages/common-types/src/BooksAPItypes'
 import SearchForm from './SearchForm'
 import BookResultList from './SearchResultsList'
 // import styles from './SearchPage.module.css'

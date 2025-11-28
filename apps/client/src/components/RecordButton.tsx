@@ -1,6 +1,6 @@
 'use client'
 
-import { BookInfoResult } from '@/packages/common-types/src/BooksAPItypes'
+import { BookInfoResult } from '../../../../packages/common-types/src/BooksAPItypes'
 import { Button } from '../../components/ui/button'
 import { Loader2, Plus, Check } from 'lucide-react'
 import React, { useState } from 'react'
