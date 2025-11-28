@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { serve } from '@hono/node-server'
 // prismaでDB接続 & BEサーバー起動時にDB接続テストを実行
 import { prisma, onStartDbTest } from '../../../packages/db/index.js'
@@ -8,6 +9,17 @@ import booksRouter from '../src/api/books.js'
 const app = new Hono()
 // ポートの指定
 const port = 3001
+
+// localhostで起動したFEの接続を許可するためのCORSミドルウェア
+app.use(
+    '/api/*',
+    cors({
+        origin : ['http://localhost:3000'],
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    })
+)
 // APIルートでのレスポンスを作成
 app.get('/', (c)=>{
     return c.text('Hello, Hono !')
