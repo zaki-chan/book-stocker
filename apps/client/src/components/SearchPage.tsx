@@ -1,14 +1,14 @@
 'use client'
 import { useState } from "react"
-import { BookInfoResult } from '@/packages/common-types/src/BooksAPItypes'
+import { BookInfoResult } from '../../../../packages/common-types/src/BooksAPItypes'
 import SearchForm from './SearchForm'
 import BookResultList from './SearchResultsList'
+// import styles from './SearchPage.module.css'
 
 
 interface SearchPageProps{
     initialResults: BookInfoResult[];
-    currentUserId: number;
-}
+    currentUserId: number;}
 
 export default function SearchPage({ initialResults, currentUserId}:SearchPageProps){
     const [ results, setResults ] = useState<BookInfoResult[]>(initialResults)
@@ -45,19 +45,20 @@ export default function SearchPage({ initialResults, currentUserId}:SearchPagePr
     }
 
     return (
-        <div className="search-page-container">
-            <h1>書籍検索</h1>
-            <SearchForm
-                onSubmit={handleSearch}
-                isLoading={isLoading}
-            />
-
-            {isLoading && <p>検索中...</p>}
-            {error && <p>エラー：{error}</p>}
+        <div className="max-w-200 ml-auto mr-auto pl-5 pr-5">
+            {/* <h1>書籍検索</h1> */}
+            <div className="mt-3">
+                <SearchForm
+                    onSubmit={handleSearch}
+                    isLoading={isLoading}
+                />
+            </div>
 
             <BookResultList
                 books={results}
-                currentUserId={0}
+                currentUserId={currentUserId}
+                isLoading={isLoading}
+                error={error}
             />
         </div>
     )

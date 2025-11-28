@@ -92,7 +92,7 @@ books.get('/search', async (c) => {
             id: item.id,
             title: item.volumeInfo.title,
             author: item.volumeInfo.authors?.join(', ') || '不明',
-            publisher: item.volumeInfo.publisher || '',
+            publisher: item.volumeInfo.publisher || '不明',
             coverUrl: item.volumeInfo.imageLinks?.thumbnail || null,
             isRegistered: false
         }))
