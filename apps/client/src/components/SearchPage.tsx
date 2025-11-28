@@ -45,9 +45,9 @@ export default function SearchPage({ initialResults, currentUserId}:SearchPagePr
     }
 
     return (
-        <div className="pl-5 pr-5">
+        <div className="max-w-200 ml-auto mr-auto pl-5 pr-5">
             {/* <h1>書籍検索</h1> */}
-            <div className="max-w-200 ml-auto mr-auto mt-3">
+            <div className="mt-3">
                 <SearchForm
                     onSubmit={handleSearch}
                     isLoading={isLoading}
